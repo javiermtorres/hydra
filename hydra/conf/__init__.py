@@ -81,9 +81,17 @@ class JobConf:
             item_sep: str = ","
             exclude_keys: List[str] = field(default_factory=list)
 
-        override_dirname: OverrideDirname = field(default_factory=OverrideDirname)
+        override_dirname: Optional["JobConf.JobConfig.OverrideDirname"] = None
 
-    config: JobConfig = field(default_factory=JobConfig)
+        def __post_init__(self) -> None:
+            if self.override_dirname is None:
+                self.override_dirname = JobConf.JobConfig.OverrideDirname()
+
+    config: Optional[JobConfig] = None
+
+    def __post_init__(self) -> None:
+        if self.config is None:
+            self.config = JobConf.JobConfig()
 
 
 @dataclass
